@@ -19,7 +19,8 @@
                                 </tr>
                                 <tr>
                                     <th>Foto</th>
-                                    <td><a href="{{ asset('storage/' . $siswa->foto) }}" target="_blank" class="d-block mr-2">
+                                    <td><a href="{{ asset('storage/' . $siswa->foto) }}" target="_blank"
+                                            class="d-block mr-2">
                                             <img src="{{ asset('storage/' . $siswa->foto) }}" width="150">
                                         </a></td>
                                 </tr>
@@ -129,7 +130,7 @@
                                 </tr>
                                 <tr>
                                     <th>Ukuran Baju</th>
-                                    <td>{{ $siswa->baju->ukuran_baju }}</td>
+                                    <td>{{ optional($siswa->baju)->ukuran_baju ?? '-' }}</td>
                                 </tr>
                             </table>
                             <br>
@@ -137,20 +138,28 @@
                             <table id="tabel2" class="table table-bordered table-striped">
                                 <tr>
                                     <th>Prestasi</th>
-                                    <td><a href="{{ asset('storage/' . $siswa->lampiran_prestasi) }}" target="_blank"
-                                            class="d-block mr-2">
-                                            <img src="{{ asset('storage/' . $siswa->lampiran_prestasi) }}" width="150">
-                                        </a></td>
+                                    <td>
+                                        @forelse ($d->lampiran_prestasi_files as $no => $prestasiFile)
+                                            <a href="{{ asset('storage/' . $prestasiFile) }}" target="_blank"
+                                                class="d-block mb-2" title="Prestasi {{ $no + 1 }}">
+                                                Prestasi {{ $no + 1 }}
+                                            </a>
+                                        @empty
+                                            <span>-</span>
+                                        @endforelse
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Akta Kelahiran</th>
-                                    <td><a href="{{ asset('storage/' . $siswa->akte) }}" target="_blank" class="d-block mr-2">
+                                    <td><a href="{{ asset('storage/' . $siswa->akte) }}" target="_blank"
+                                            class="d-block mr-2">
                                             <img src="{{ asset('storage/' . $siswa->akte) }}" width="150">
                                         </a></td>
                                 </tr>
                                 <tr>
                                     <th>Kartu Keluarga</th>
-                                    <td><a href="{{ asset('storage/' . $siswa->kk) }}" target="_blank" class="d-block mr-2">
+                                    <td><a href="{{ asset('storage/' . $siswa->kk) }}" target="_blank"
+                                            class="d-block mr-2">
                                             <img src="{{ asset('storage/' . $siswa->kk) }}" width="150">
                                         </a></td>
                                 </tr>
@@ -170,7 +179,8 @@
                                 </tr>
                                 <tr>
                                     <th>Rapor</th>
-                                    <td><a href="{{ asset('storage/' . $siswa->rapor) }}" target="_blank" class="d-block mr-2">
+                                    <td><a href="{{ asset('storage/' . $siswa->rapor) }}" target="_blank"
+                                            class="d-block mr-2">
                                             <i class="fas fa-file">RAPOR {{ $siswa->name }}</i>
                                         </a></td>
                                 </tr>

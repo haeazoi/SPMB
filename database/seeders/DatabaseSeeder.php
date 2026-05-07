@@ -13,6 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            JurusanSeeder::class,
+            BajuSeeder::class,
+            InformasiSeeder::class,
+            jalurSeeder::class,
+        ]);
+
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@smkmigas.com',

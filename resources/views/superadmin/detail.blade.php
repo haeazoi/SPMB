@@ -129,7 +129,7 @@
                                 </tr>
                                 <tr>
                                     <th>Ukuran Baju</th>
-                                    <td>{{ $siswa->baju->ukuran_baju }}</td>
+                                    <td>{{ optional($siswa->baju)->ukuran_baju ?? '-' }}</td>
                                 </tr>
                             </table>
                             <br>
@@ -137,10 +137,15 @@
                             <table id="tabel2" class="table table-bordered table-striped">
                                 <tr>
                                     <th>Prestasi</th>
-                                    <td><a href="{{ asset('storage/' . $siswa->lampiran_prestasi) }}" target="_blank"
-                                            class="d-block mr-2">
-                                            <img src="{{ asset('storage/' . $siswa->lampiran_prestasi) }}" width="150">
-                                        </a></td>
+                                    <td>
+                                    @forelse ($d->lampiran_prestasi_files as $no => $prestasiFile)
+                                        <a href="{{ asset('storage/' . $prestasiFile) }}" target="_blank" class="d-block mb-2" title="Prestasi {{ $no + 1 }}">
+                                            Prestasi {{ $no + 1 }}
+                                        </a>
+                                    @empty
+                                        <span>-</span>
+                                    @endforelse
+                                </td>
                                 </tr>
                                 <tr>
                                     <th>Akta Kelahiran</th>

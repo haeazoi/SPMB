@@ -380,6 +380,19 @@
     </a>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const requiredAwal = ['aggrement', 'nisn', 'name', 'no_hp', 'tempat_lahir', 'sekolah', 'id_jalur', 'id_jurusan', 'id_info'];
+            document.querySelectorAll('input, select, textarea').forEach(function(el) {
+                const name = el.getAttribute('name');
+                if (!name) return;
+                const normalized = name.endsWith('[]') ? name.slice(0, -2) : name;
+                if (!requiredAwal.includes(normalized)) {
+                    el.removeAttribute('required');
+                }
+            });
+        });
+    </script>
+    <script>
         // Inisialisasi langkah saat ini
         let currentStep = 1;
         const totalSteps = 3;

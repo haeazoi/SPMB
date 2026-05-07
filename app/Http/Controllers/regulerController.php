@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Pendaftar;
 use App\Models\Pembayaran;
 use App\Models\Student;
+use App\Services\WhatsAppNotificationService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class regulerController extends Controller
 {
@@ -41,6 +43,11 @@ class regulerController extends Controller
                 'status_bayar' => 'Belum Bayar',
             ]);
 
+            app(WhatsAppNotificationService::class)->send(
+                $pendaftar->no_hp,
+                "Halo {$pendaftar->name}, selamat Anda LULUS seleksi berkas jalur Reguler. Silakan lanjutkan daftar ulang dan upload bukti pembayaran."
+            );
+
             return redirect()->back()->with('success', 'Berkas berhasil diverifikasi dan tagihan telah dibuat.');
         }
 
@@ -55,6 +62,11 @@ class regulerController extends Controller
         if ($pendaftar->status_berkas == 'Menunggu') {
             $pendaftar->status_berkas = 'Ditolak';
             $pendaftar->save();
+
+            app(WhatsAppNotificationService::class)->send(
+                $pendaftar->no_hp,
+                "Halo {$pendaftar->name}, mohon maaf Anda belum lulus seleksi berkas jalur Reguler."
+            );
 
             return redirect()->back()->with('info', 'Pendaftar telah ditolak.');
         }
@@ -76,7 +88,7 @@ class regulerController extends Controller
     public function updateBayar(Request $r, $id)
     {
         // Gunakan DB Transaction agar jika salah satu gagal (siswa/ortu), data tidak nanggung
-        return \DB::transaction(function () use ($id) {
+        return DB::transaction(function () use ($id) {
 
             $pembayaran = Pembayaran::where('id_pendaftar', $id)->first();
 
@@ -143,6 +155,11 @@ class regulerController extends Controller
                     $dataOrtu
                 );
 
+                app(WhatsAppNotificationService::class)->send(
+                    $pembayaran->pendaftar->no_hp,
+                    "Halo {$pembayaran->pendaftar->name}, daftar ulang dan pembayaran Anda sudah diverifikasi. Status: LULUS."
+                );
+
                 return redirect()->back()->with('success', 'Pembayaran dikonfirmasi. Data Siswa & Orang Tua berhasil dipindahkan.');
             }
 
@@ -162,6 +179,11 @@ class regulerController extends Controller
                 'bukti_pembayaran' => null, // Opsional: hapus bukti lama agar bisa upload baru
                 'status_hasil' => 'Tidak Lulus'
             ]);
+
+            app(WhatsAppNotificationService::class)->send(
+                $pembayaran->pendaftar->no_hp,
+                "Halo {$pembayaran->pendaftar->name}, verifikasi pembayaran belum berhasil. Silakan perbaiki data daftar ulang dan upload ulang bukti pembayaran."
+            );
 
             return redirect()->back()->with('error', 'Pembayaran ditolak. Status pendaftaran diperbarui.');
         }

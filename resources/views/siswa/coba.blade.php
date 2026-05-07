@@ -11,8 +11,23 @@
                                     <h2>Selamat, {{ $nama }}<br>
                                         Anda Diterima!
                                     </h2>
-                                    <p>Berdasarkan hasil verifikasi data pada Sistem Penerimaan Murid Baru (SPMB) SMK Migas Bumi Melayu Riau, Anda dinyatakan Diterima. Silakan lakukan Daftar Ulang dan melengkapi dokumen administrasi tambahan sesuai dengan petunjuk yang tertera.</p>
-                                    <a href="{{ url('/') }}" class="btn_2">Daftar Ulang</a>
+                                    <p>Berdasarkan hasil verifikasi data pada Sistem Penerimaan Murid Baru (SPMB) SMK Migas
+                                        Bumi Melayu Riau, Anda dinyatakan Diterima. Silakan lakukan Daftar Ulang dan
+                                        melengkapi dokumen administrasi tambahan sesuai dengan petunjuk yang tertera.</p>
+
+                                    <div class="row" style="gap: 10px;">
+                                        @if (
+                                            $pembayaranSiswa->bayar &&
+                                                ($pembayaranSiswa->bayar->status_hasil === 'Lulus' || $pembayaranSiswa->bayar->status_bayar === 'Lunas'))
+                                            <a href="{{ route('hasil.pendaftaran') }}" class="btn_2">Cek Hasil Akhir</a>
+                                        @elseif ($pembayaranSiswa->bayar && $pembayaranSiswa->bayar->status_bayar === 'Proses Verifikasi')
+                                            <a href="{{ route('daftar_ulang.form') }}" class="btn_2">Edit Daftar Ulang</a>
+                                            <a href="{{ route('hasil.pendaftaran') }}" class="btn_2">Cek Status
+                                                Pembayaran</a>
+                                        @else
+                                            <a href="{{ route('daftar_ulang.form') }}" class="btn_2">Daftar Ulang</a>
+                                        @endif
+                                    </div>
                                 </div>
                                 <img src="{{ asset('asset/img/lulus.png') }}">
                             </div>

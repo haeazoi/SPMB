@@ -44,8 +44,8 @@
                                         <td>{{ $daftar->no_pendaftaran }}</td>
                                         <td>{{ $daftar->name }}</td>
                                         <td>{{ $daftar->jurusan->nama_jurusan }}</td>
-                                        <td><a href="{{ asset('storage/' . $daftar->undangan) }}"
-                                                    target="_blank">Surat Undangan</a></td>
+                                        <td><a href="{{ asset('storage/' . $daftar->undangan) }}" target="_blank">Surat
+                                                Undangan</a></td>
                                         <td>
                                             @if ($daftar->status_berkas == 'Menunggu')
                                                 <span class="badge badge-warning">{{ $daftar->status_berkas }}</span>
@@ -190,7 +190,7 @@
                             </tr>
                             <tr>
                                 <th>Ukuran Baju</th>
-                                <td>{{ $d->baju->ukuran_baju }}</td>
+                                <td>{{ optional($d->baju)->ukuran_baju ?? '-' }}</td>
                             </tr>
                         </table>
                         <h4>📝 Data Orang Tua/Wali</h4>
@@ -272,9 +272,16 @@
                             </tr>
                             <tr>
                                 <th>Prestasi</th>
-                                <td><a href="{{ asset('storage/' . $d->lampiran_prestasi) }}" target="_blank" class="d-block mr-2">
-                                        <img src="{{ asset('storage/' . $d->lampiran_prestasi) }}" width="150">
-                                    </a></td>
+                                <td>
+                                    @forelse ($d->lampiran_prestasi_files as $no => $prestasiFile)
+                                        <a href="{{ asset('storage/' . $prestasiFile) }}" target="_blank"
+                                            class="d-block mb-2" title="Prestasi {{ $no + 1 }}">
+                                            Prestasi {{ $no + 1 }}
+                                        </a>
+                                    @empty
+                                        <span>-</span>
+                                    @endforelse
+                                </td>
                             </tr>
                             <tr>
                                 <th>Akta Kelahiran</th>
@@ -296,7 +303,8 @@
                             </tr>
                             <tr>
                                 <th>Ijazah/Surat Keterangan Lulus</th>
-                                <td><a href="{{ asset('storage/' . $d->suratlulus) }}" target="_blank" class="d-block mr-2">
+                                <td><a href="{{ asset('storage/' . $d->suratlulus) }}" target="_blank"
+                                        class="d-block mr-2">
                                         <img src="{{ asset('storage/' . $d->suratlulus) }}" width="150">
                                     </a></td>
                             </tr>

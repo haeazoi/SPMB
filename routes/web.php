@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cobaController;
 use App\Http\Controllers\loginController;
@@ -39,7 +38,7 @@ Route::get('/login/tu', [loginController::class, "TU"])->name('login.tu');
 Route::get('/login/siswa', [loginController::class, "siswa"])->name('login.siswa');
 Route::post('/login', [loginController::class, "login_process"]);
 
- Route::get('/daftar_ulang', [daftarController::class, "ulang"]);
+ Route::get('/daftar_ulang_info', [daftarController::class, "ulang"]);
 
 Route::group(['middleware' => 'auth:web,pendaftar'], function () {
     Route::get('/logout', [loginController::class, 'logout']);
@@ -85,7 +84,9 @@ Route::group(['middleware' => 'auth:web,pendaftar'], function () {
         Route::get('/status_pendaftaran', [pembayaranController::class, "index"])->name('status.pendaftaran');
         Route::get('/hasil_pendaftar', [pembayaranController::class, "pembayaran"])->name('hasil.pendaftaran');
         Route::post('/bayar', [pembayaranController::class, "store"])->name('pembayaran');
-       
+        Route::get('/daftar_ulang', [pembayaranController::class, "formDaftarUlang"])->name('daftar_ulang.form');
+        Route::post('/daftar_ulang', [pembayaranController::class, "submitDaftarUlang"])->name('daftar_ulang.submit');
+
 
     });
 

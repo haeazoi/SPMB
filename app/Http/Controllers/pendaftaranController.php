@@ -7,13 +7,12 @@ use App\Models\Pendaftar;
 use App\Models\Jurusan;
 use App\Models\Informasi;
 use App\Models\Baju;
-use App\Models\Pembayaran;
 use App\Models\Jalur;
+use App\Services\WhatsAppNotificationService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
-use Validator;
+
 
 class PendaftaranController extends Controller
 {
@@ -92,7 +91,7 @@ class PendaftaranController extends Controller
         ];
 
         $validator = Validator::make($request->all(), [
-   
+
             'aggrement' => 'required',
 
             'nisn' => 'required|string|digits:10|unique:pendaftaran,nisn',
@@ -126,8 +125,8 @@ class PendaftaranController extends Controller
             'id_info' => 'required|exists:informasi,id',
             'id_jalur' => 'required|exists:jalur,id',
 
-            'nama_ayah' => 'required|string',
-            'no_hp_ayah' => 'required|string|max:15',
+            'nama_ayah' => 'nullable|string',
+            'no_hp_ayah' => 'nullable|string|max:15',
             'status_ayah' => ['required', Rule::in(['Wafat', 'Hidup'])],
             'kewarganegaraan_ayah' => 'required|string',
             'pendidikan_ayah' => 'required|string',
@@ -136,8 +135,8 @@ class PendaftaranController extends Controller
             'penghasilan_ayah' => 'required|string',
             'ktp_ayah' => 'required|file|mimes:pdf,jpeg,png,jpg|max:1024',
 
-            'nama_ibu' => 'required|string',
-            'no_hp_ibu' => 'required|string|max:15',
+            'nama_ibu' => 'nullable|string',
+            'no_hp_ibu' => 'nullable|string|max:15',
             'status_ibu' => ['required', Rule::in(['Wafat', 'Hidup'])],
             'kewarganegaraan_ibu' => 'required|string',
             'pendidikan_ibu' => 'required|string',
@@ -151,16 +150,17 @@ class PendaftaranController extends Controller
             'penghasilan_wali' => 'nullable|string',
             'ktp_wali' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
 
-            'foto' => 'required|file|mimes:jpeg,png,jpg|max:1024',
-            'akte' => 'required|file|mimes:pdf,jpeg,png,jpg|max:1024',
-            'suratbaik' => 'required|file|mimes:pdf,jpeg,png,jpg|max:1024',
-            'suratlulus' => 'required|file|mimes:pdf,jpeg,png,jpg|max:1024',
-            'rapor' => 'required|file|mimes:pdf|max:1024',
-            'kk' => 'required|file|mimes:pdf,jpeg,png,jpg|max:1024',
-            'lampiran_prestasi' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
+            'foto' => 'nullable|file|mimes:jpeg,png,jpg|max:1024',
+            'akte' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
+            'suratbaik' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
+            'suratlulus' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
+            'rapor' => 'nullable|file|mimes:pdf|max:1024',
+            'kk' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
+            'lampiran_prestasi' => 'nullable|array',
+            'lampiran_prestasi.*' => 'file|mimes:pdf,jpeg,png,jpg|max:1024',
             'undangan' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:1024',
 
-        ], $messages, $attributes); 
+        ], $messages, $attributes);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -169,17 +169,26 @@ class PendaftaranController extends Controller
         $safeData = $validator->validated();
 
         try {
-            $fotoPath = $request->file('foto')->store('pendaftar_photos', 'public');
-            $ktp_ayahPath = $request->file('ktp_ayah')->store('pendaftar_ktpayah', 'public');
-            $ktp_ibuPath = $request->file('ktp_ibu')->store('pendaftar_ktpibu', 'public');
-            $aktePath = $request->file('akte')->store('pendaftar_akte', 'public');
-            $suratbaikPath = $request->file('suratbaik')->store('pendaftar_suratbaik', 'public');
-            $suratlulusPath = $request->file('suratlulus')->store('pendaftar_suratlulus', 'public');
-            $raporPath = $request->file('rapor')->store('pendaftar_rapor', 'public');
-            $kkPath = $request->file('kk')->store('pendaftar_kk', 'public');
+            $fotoPath = $request->hasFile('foto') ? $request->file('foto')->store('pendaftar_photos', 'public') : null;
+            $ktp_ayahPath = $request->hasFile('ktp_ayah') ? $request->file('ktp_ayah')->store('pendaftar_ktpayah', 'public') : null;
+            $ktp_ibuPath = $request->hasFile('ktp_ibu') ? $request->file('ktp_ibu')->store('pendaftar_ktpibu', 'public') : null;
+            $aktePath = $request->hasFile('akte') ? $request->file('akte')->store('pendaftar_akte', 'public') : null;
+            $suratbaikPath = $request->hasFile('suratbaik') ? $request->file('suratbaik')->store('pendaftar_suratbaik', 'public') : null;
+            $suratlulusPath = $request->hasFile('suratlulus') ? $request->file('suratlulus')->store('pendaftar_suratlulus', 'public') : null;
+            $raporPath = $request->hasFile('rapor') ? $request->file('rapor')->store('pendaftar_rapor', 'public') : null;
+            $kkPath = $request->hasFile('kk') ? $request->file('kk')->store('pendaftar_kk', 'public') : null;
 
             $ktp_waliPath = $request->hasFile('ktp_wali') ? $request->file('ktp_wali')->store('pendaftar_ktpwali', 'public') : null;
-            $lampiranPath = $request->hasFile('lampiran_prestasi') ? $request->file('lampiran_prestasi')->store('prestasi_pendaftar', 'public') : null;
+            $lampiranPath = null;
+            if ($request->hasFile('lampiran_prestasi')) {
+                $lampiranPath = [];
+                foreach ($request->file('lampiran_prestasi') as $lampiranFile) {
+                    if ($lampiranFile) {
+                        $lampiranPath[] = $lampiranFile->store('prestasi_pendaftar', 'public');
+                    }
+                }
+                $lampiranPath = empty($lampiranPath) ? null : json_encode($lampiranPath);
+            }
             $undanganPath = $request->hasFile('undangan') ? $request->file('undangan')->store('undangan_pendaftar', 'public') : null;
 
             $pendaftar = new Pendaftar();
@@ -218,12 +227,16 @@ class PendaftaranController extends Controller
 
             $pendaftar->save();
 
+            app(WhatsAppNotificationService::class)->send(
+                $pendaftar->no_hp,
+                "Halo {$pendaftar->name}, pendaftaran SPMB Anda sudah kami terima dengan nomor {$pendaftar->no_pendaftaran}. Status saat ini: Menunggu verifikasi berkas."
+            );
+
             return redirect()->route('pendaftaran.sukses')->with([
                 'success' => 'Pendaftaran berhasil dikirim.',
                 'no_pendaftaran' => $pendaftar->no_pendaftaran,
                 'nisn' => $pendaftar->nisn
             ]);
-
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

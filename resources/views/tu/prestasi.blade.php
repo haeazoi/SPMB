@@ -18,7 +18,6 @@
                                         <th>No Pendaftaran</th>
                                         <th>Nama Lengkap</th>
                                         <th>Jurusan</th>
-                                        <th>Prestasi</th>
                                         <th>Status Berkas</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -33,8 +32,6 @@
                                         <td>{{ $daftar->no_pendaftaran }}</td>
                                         <td>{{ $daftar->name }}</td>
                                         <td>{{ $daftar->jurusan->nama_jurusan }}</td>
-                                        <td><a href="{{ asset('storage/' . $daftar->lampiran_prestasi) }}"
-                                                target="_blank">Lampiran Prestasi</a></td>
                                         <td>
                                             @if ($daftar->status_berkas == 'Menunggu')
                                                 <span class="badge badge-warning">{{ $daftar->status_berkas }}</span>
@@ -255,10 +252,15 @@
                         <table id="tabel2" class="table table-bordered table-striped">
                             <tr>
                                 <th>Prestasi</th>
-                                <td><a href="{{ asset('storage/' . $d->lampiran_prestasi) }}" target="_blank"
-                                        class="d-block mr-2">
-                                        <img src="{{ asset('storage/' . $d->lampiran_prestasi) }}" width="150">
-                                    </a></td>
+                                <td>
+                                    @forelse ($d->lampiran_prestasi_files as $prestasiFile)
+                                        <a href="{{ asset('storage/' . $prestasiFile) }}" target="_blank" class="d-block mb-2">
+                                            <img src="{{ asset('storage/' . $prestasiFile) }}" width="150">
+                                        </a>
+                                    @empty
+                                        <span>-</span>
+                                    @endforelse
+                                </td>
                             </tr>
                             <tr>
                                 <th>Akta Kelahiran</th>

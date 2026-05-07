@@ -77,6 +77,26 @@ class Pendaftar extends Authenticatable
 
     protected $guarded = [];
 
+    public function getLampiranPrestasiFilesAttribute(): array
+    {
+        if (empty($this->lampiran_prestasi)) {
+            return [];
+        }
+
+        $decoded = json_decode($this->lampiran_prestasi, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return array_values(array_filter($decoded));
+        }
+
+        return [$this->lampiran_prestasi];
+    }
+
+    public function getLampiranPrestasiUtamaAttribute(): ?string
+    {
+        $files = $this->lampiran_prestasi_files;
+        return $files[0] ?? null;
+    }
+
     //relasi
     public function jurusan()
     {
