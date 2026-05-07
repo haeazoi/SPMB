@@ -1,0 +1,125 @@
+@extends('layout.superadmin')
+@section('content')
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h4>Pengguna SPMB</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#AddUser">
+                                Tambah Pengguna
+                            </button>
+                            <table id="tabel2" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr class="text-center text-bold">
+                                        <th> NO </th>
+                                        <th> Role </th>
+                                        <th> Nama </th>
+                                        <th> Email </th>
+                                        <th> Aksi </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                            $no=1;
+                                            foreach ($users as $value) {
+                                        ?>
+
+                                    <tr class="text-center">
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ $value->role }}</td>
+                                        <td>{{ $value->name }}</td>
+                                        <td>{{ $value->email }}</td>
+                                        <td> <button class="btn btn-sm btn-warning"
+                                                data-target="#EditPengguna{{ $value->id }}" data-toggle="modal"><i
+                                                    class="fas fa-pencil-alt"></i>Edit</button>
+                                            <form action="{{ route('user.destroy', $value->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger Hapus">
+                                                    <i class="fas fa-trash"></i>Hapus</button>
+                                            </form>
+                                        </td>
+                                        <?php } ?>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="AddUser" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-default">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Form Pengguna</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('user.store')}}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="text" class="form-control" name="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success bg-gradien Tambah"> Simpan </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @foreach ($users as $u)
+        <div class="modal fade" id="EditPengguna{{ $u->id }}" tabindex="-1" role="dialog"
+            aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-default">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Pengguna</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="/management_user/{{ $u->id }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Nama</label>
+                                <input type="text" value="{{ $u->name }}" class="form-control" name="name"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" value="{{ $u->email }}" class="form-control" name="email"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success Edit"> Simpan Perubahan </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+@endsection

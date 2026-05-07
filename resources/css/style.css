@@ -1,0 +1,196 @@
+/* Reset Dasar */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5; /* Latar belakang abu-abu muda */
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* ======================================= */
+/* HEADER (Sistem Penerimaan Murid Baru)   */
+/* ======================================= */
+.app-header {
+    background-color: #fff;
+    border-bottom: 2px solid #ccc;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo-icon {
+    color: #004d99; /* Warna biru SMK Migas */
+    font-size: 28px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.tahun-ajaran {
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+}
+
+/* ======================================= */
+/* STEPPER (Navigasi Langkah 1-5)          */
+/* ======================================= */
+.stepper {
+    display: flex;
+    margin: 20px 0;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step {
+    flex-grow: 1;
+    text-align: center;
+    padding: 15px 10px;
+    color: #555;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    border-right: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Jarak antara nomor dan teks */
+}
+
+/* Mengubah style pending (belum aktif) */
+.step.pending {
+    background-color: #f7f7f7;
+    color: #999;
+}
+
+/* Mengubah style active (langkah saat ini) */
+.step.active {
+    background-color: #004d99; /* Biru tua, seperti di gambar */
+    color: #fff;
+    border-right: none;
+}
+
+.step-number {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #004d99;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Warna nomor langkah saat aktif */
+.step.active .step-number {
+    background-color: #004d99;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+
+/* ======================================= */
+/* KONTEN (Ketentuan SPMB)                 */
+/* ======================================= */
+.content-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.main-title {
+    font-size: 24px;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.subheader-box {
+    background-color: #004d99; /* Biru tua untuk header konten */
+    color: #fff;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.unit-text {
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.ketentuan-list {
+    list-style-type: none; /* Menghilangkan bullet default */
+    counter-reset: item;
+    padding-left: 0;
+}
+
+.ketentuan-list li {
+    counter-increment: item;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+}
+
+.ketentuan-list li::before {
+    content: counter(item);
+    background-color: #004d99;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-right: 15px;
+    flex-shrink: 0;
+    height: 30px;
+    line-height: 1.2;
+}
+
+/* Tombol WhatsApp */
+.whatsapp-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #25d366;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
